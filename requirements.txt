@@ -1,0 +1,17 @@
+python-dotenv
+faiss-cpu
+langchain
+langchain_community
+langchain_huggingface
+langchain_openai
+nltk
+numpy
+pandas
+gensim
+transformers
+scikit-learn
+sentence-transformers 
+pymupdf
+unstructured
+"unstructured[md]"
+chromadb

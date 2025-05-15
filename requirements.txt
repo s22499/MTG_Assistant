@@ -12,6 +12,5 @@ transformers
 scikit-learn
 sentence-transformers 
 pymupdf
-unstructured
-"unstructured[md]"
+unstructured[md]
 chromadb

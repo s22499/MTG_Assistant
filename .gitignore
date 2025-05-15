@@ -1,1 +1,21 @@
-data/
+__pycache__/
+
+# Virtual environments
+.env/
+.venv/
+venv/
+env/
+
+# VSCode settings
+.vscode/
+
+# Docker
+**/__pycache__/
+**/*.pyc
+*.db
+
+# Logs and temp files
+*.log
+*.tmp
+*.bak
+*.swp

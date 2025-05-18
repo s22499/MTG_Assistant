@@ -3,4 +3,6 @@ requests
 flask
 langchain-core
 langchain-openai
+langchain-chroma
 streamlit
+chromadb-client

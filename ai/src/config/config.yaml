@@ -1,0 +1,6 @@
+chroma:
+  host: data
+  port: 8000
+  embeddings: openai
+  embedding_model: text-embedding-3-small
+env_path: ./.env

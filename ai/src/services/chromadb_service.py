@@ -15,7 +15,7 @@ class ChromaDBService:
             cls._instance._initialized = False
         return cls._instance
 
-    def __init__(self, config_path: str = "ai\src\config\config.yaml"):
+    def __init__(self, config_path: str = os.path.join(os.path.dirname(__file__), "../../config/config.yaml")):
         if getattr(self, "_initialized", False):
             return
         config_manager = ConfigManager(config_path)
@@ -61,6 +61,6 @@ class ChromaDBService:
     def add_documents(self, collection_name: str, chunks: list[Document], metadatas: list[dict] = None, ids: list[str] = None):
         """Add documents to the specified collection."""
         collection = self.get_collection(collection_name)
-        return collection.add_texts(chunks, metadatas=metadatas, ids=ids)
+        return collection.add_documents(chunks)
 
 

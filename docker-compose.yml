@@ -28,11 +28,17 @@ services:
     build:
       context: ./ai
       dockerfile: Dockerfile
+    command: ["python", "src/pipeline/init_collections.py"]
     ports:
       - "5000:5000"
+    env_file:
+      - .env
     volumes:
-      - ./ai:/app
+      - ./ai/src:/app/src
+      - ./ai/src/config:/app/config
       - ./data:/app/data
+    depends_on:
+      - data
 
   data:
     image: ghcr.io/chroma-core/chroma:latest

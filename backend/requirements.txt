@@ -1,0 +1,10 @@
+dotenv
+requests
+flask
+langchain-core
+langchain-openai
+langchain-chroma
+chromadb-client
+fastapi
+uvicorn
+pyyaml

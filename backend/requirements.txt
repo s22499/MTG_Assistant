@@ -1,6 +1,5 @@
 dotenv
 requests
-flask
 langchain-core
 langchain-openai
 langchain-chroma

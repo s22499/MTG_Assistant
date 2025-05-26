@@ -1,9 +1,10 @@
 from langchain_chroma import Chroma
-from src.config.config_manager import ConfigManager
+from config.config_manager import ConfigManager
 from langchain_openai import OpenAIEmbeddings
 import os
 import chromadb
 from chromadb.config import Settings
+from langchain.schema import Document
 
 class ChromaDBService:
     _instance = None
@@ -14,7 +15,7 @@ class ChromaDBService:
             cls._instance._initialized = False
         return cls._instance
 
-    def __init__(self, config_path: str = "src/config/config.yaml"):
+    def __init__(self, config_path: str = "ai\src\config\config.yaml"):
         if getattr(self, "_initialized", False):
             return
         config_manager = ConfigManager(config_path)
@@ -57,7 +58,9 @@ class ChromaDBService:
             )
         return self._collections[collection_name]
 
-    def add_documents(self, collection_name: str, documents: list[str], metadatas: list[dict] = None, ids: list[str] = None):
+    def add_documents(self, collection_name: str, chunks: list[Document], metadatas: list[dict] = None, ids: list[str] = None):
         """Add documents to the specified collection."""
         collection = self.get_collection(collection_name)
-        return collection.add_texts(documents, metadatas=metadatas, ids=ids)
+        return collection.add_texts(chunks, metadatas=metadatas, ids=ids)
+
+

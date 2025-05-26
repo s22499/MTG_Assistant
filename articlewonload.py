@@ -1,4 +1,7 @@
 import os
+import requests
+import re
+from bs4 import BeautifulSoup
 from newspaper import Article
 from datetime import datetime
 
@@ -33,7 +36,45 @@ def download_article_as_markdown(url, output_folder):
 
     print(f"Markdown article saved to: {filepath}")
 
+def get_article_links_from_page(listing_url):
+    """Extract article links from a given listing page."""
+    base_url = "https://edhrec.com"
+    response = requests.get(listing_url)
+    response.raise_for_status()
+
+    soup = BeautifulSoup(response.text, 'html.parser')
+    article_links = []
+
+    # Use more general selector for article links
+    for link_tag in soup.select('a[href^="/articles/"]'):
+        href = link_tag.get('href')
+        if href:
+            full_url = base_url + href
+            if full_url not in article_links:
+                article_links.append(full_url)
+
+    return article_links
+
+
 # Example usage
-url = "https://www.tcgplayer.com/content/article/Top-10-Best-Creature-Types-in-MTG/6cd88f78-e355-4d08-88cd-eede4c34056b/"
+#url = "https://edhrec.com/articles/the-best-free-white-spells-for-commander"
+#output_folder = "data/Articles/Guides"
+#download_article_as_markdown(url, output_folder)
+
+listing_url = "https://edhrec.com/articles/page/"
 output_folder = "data/Articles/Guides"
-download_article_as_markdown(url, output_folder)
+article_urls =[]
+for n in range(101,300,1):
+    url = listing_url + str(n)
+    articles = get_article_links_from_page(url)
+    article_urls.extend(articles)
+
+article_pattern = re.compile(r'^https://edhrec\.com/articles/(?!tag/|author/|page/)[a-z0-9\-]+$', re.IGNORECASE)
+
+valid_articles = [url for url in article_urls if article_pattern.match(url)]
+
+for url in valid_articles:
+    try:
+        download_article_as_markdown(url, output_folder)
+    except Exception as e:
+        print(f"Failed to process {url}: {e}")

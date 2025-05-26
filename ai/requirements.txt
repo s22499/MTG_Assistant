@@ -1,8 +1,10 @@
 dotenv
 requests
-flask
+langchain
 langchain-core
 langchain-openai
 langchain-chroma
 streamlit
 chromadb-client
+langchain_text_splitters
+langchain-community

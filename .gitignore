@@ -11,7 +11,7 @@ env/
 
 # VSCode settings
 .vscode/
-
+data/
 # Docker
 **/__pycache__/
 **/*.pyc

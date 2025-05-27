@@ -58,9 +58,26 @@ class ChromaDBService:
             )
         return self._collections[collection_name]
 
-    def add_documents(self, collection_name: str, chunks: list[Document], metadatas: list[dict] = None, ids: list[str] = None):
-        """Add documents to the specified collection."""
+    def add_documents(
+        self,
+        collection_name: str,
+        chunks: list[Document],
+        metadatas: list[dict] = None,
+        ids: list[str] = None,
+        batch_size: int = 100
+    ):
+        """Add documents to the specified collection in batches."""
         collection = self.get_collection(collection_name)
-        return collection.add_documents(chunks)
+
+        for i in range(0, len(chunks), batch_size):
+            batch_docs = chunks[i:i + batch_size]
+            batch_ids = ids[i:i + batch_size] if ids else None
+            batch_metadatas = metadatas[i:i + batch_size] if metadatas else None
+
+            collection.add_documents(
+                documents=batch_docs,
+                ids=batch_ids
+            )
+            print(f"Uploading batch {i // batch_size + 1}")
 
 

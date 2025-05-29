@@ -79,5 +79,10 @@ class ChromaDBService:
                 ids=batch_ids
             )
             print(f"Uploading batch {i // batch_size + 1}")
-
+            
+    def reset_collection(self, name: str):
+        """Delete and recreate the collection"""
+        self._client.delete_collection(name)
+        self._collections.pop(name, None)
+        self.get_collection(name)
 

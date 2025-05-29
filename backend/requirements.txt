@@ -11,3 +11,6 @@ langchain-community
 unstructured
 unstructured[md]
 jq
+fastapi
+uvicorn
+pyyaml

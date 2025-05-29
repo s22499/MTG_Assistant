@@ -10,7 +10,7 @@ OPEN_AI_KEY = os.environ["OPENAI_API_KEY"]
 CHROMA_HOST = "http://localhost:8000"  # or use host.docker.internal
 
 COLLECTIONS = ["Cards", "Articles"]
-QUERY = "Can you provide card details of Mizzix's Mastery?"
+QUERY = "Whitch instant cards work good in a control deck in black and blue mana colors?"
 TOP_K = 3
 
 # === LangChain tools ===

@@ -26,7 +26,7 @@ services:
 
   ai:
     build:
-      context: ./ai
+      context: ./backend
       dockerfile: Dockerfile
     command: ["python", "src/pipeline/init_collections.py"]
     ports:
@@ -34,8 +34,8 @@ services:
     env_file:
       - .env
     volumes:
-      - ./ai/src:/app/src
-      - ./ai/src/config:/app/config
+      - ./backend/src:/app/src
+      - ./backend/src/config:/app/config
       - ./data:/app/data
     depends_on:
       - data

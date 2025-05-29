@@ -1,7 +1,7 @@
 import os
 from langchain.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
-from ai.src.prompts.prompt_templates import QUERY_REWRITE_PROMPT, ANSWER_PROMPT_TEMPLATE
+from src.prompts.prompt_templates import QUERY_REWRITE_PROMPT, ANSWER_PROMPT_TEMPLATE
 
 
 class LLMService:

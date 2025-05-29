@@ -1,5 +1,5 @@
 import streamlit as st
-from services.promptService import PromptService
+from src.services.promptService import PromptService
 import time
 
 class ChatbotApp:

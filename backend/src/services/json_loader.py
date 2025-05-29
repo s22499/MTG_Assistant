@@ -1,4 +1,4 @@
-from langchain.document_loaders import JSONLoader
+from langchain_community.document_loaders import JSONLoader
 from langchain.schema import Document
 from langchain_text_splitters import RecursiveJsonSplitter
 from typing import List

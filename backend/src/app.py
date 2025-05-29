@@ -2,10 +2,12 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from src.config.config_manager import ConfigManager
 from src.services.chromadb_service import ChromaDBService
+from src.services.llm_service import LLMService
 
 
 app = FastAPI()
 chroma_service = ChromaDBService()
+llm_service = LLMService()
 
 # Load configuration
 config = ConfigManager("config.yaml")
@@ -67,3 +69,24 @@ def reset_chroma():
         return {"status": "Collection reset successfully."}
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
+    
+
+@app.post("/generate")
+async def generate(request: Request):
+    data = await request.json()
+    question = data.get("question")
+    context = data.get("context")
+    if not question or not context:
+        return {"error": "Missing 'question' or 'context'"}
+    response = llm_service.generate_answer(context=context, question=question)
+    return {"response": response}
+
+
+@app.post("/refine")
+async def refine(request: Request):
+    data = await request.json()
+    question = data.get("question")
+    if not question:
+        return {"error": "Missing 'question'"}
+    refined = llm_service.refine_query(question)
+    return {"refined_query": refined}

@@ -6,7 +6,7 @@ import chromadb
 import os
 
 # === Setup ===
-OPEN_AI_KEY = os.environ["OPENAI_API_KEY"]
+OPEN_AI_KEY = os.environ["OPENAI_API_KEY_TEG"]
 CHROMA_HOST = "http://localhost:8000"  # or use host.docker.internal
 
 COLLECTIONS = ["Cards", "Articles"]

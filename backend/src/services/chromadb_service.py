@@ -1,5 +1,5 @@
 from langchain_chroma import Chroma
-from config.config_manager import ConfigManager
+from src.config.config_manager import ConfigManager
 from langchain_openai import OpenAIEmbeddings
 import os
 import chromadb
@@ -31,9 +31,9 @@ class ChromaDBService:
         self._collections = {}
 
         # Get OpenAI API key from environment variable
-        _openai_api_key = os.environ.get("OPENAI_API_KEY")
+        _openai_api_key = os.environ.get("OPENAI_API_KEY_TEG")
         if not _openai_api_key:
-            raise ValueError("OPENAI_API_KEY environment variable not set.")
+            raise ValueError("OPENAI_API_KEY_TEG environment variable not set.")
 
         # Get embedding model from config, default to 'text-embedding-3-small'
         _embedding_model = config_manager.get_value("chroma.embedding_model", "text-embedding-3-small")

@@ -15,4 +15,5 @@ COPY . .
 EXPOSE 5000
 
 # Run the application
-CMD ["python", "-m", "src.app"]
+# CMD ["python", "-m", "src.app"]
+CMD ["streamlit", "run", "src/app.py", "--server.port=8501", "--server.address=0.0.0.0"]

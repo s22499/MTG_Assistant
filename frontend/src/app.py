@@ -14,6 +14,13 @@ class ChatbotApp:
         self.prompt_service = PromptService(api_url="http://data:8000")
 
     def initialize_session_state(self):
+        if "is_streaming" not in st.session_state:
+            st.session_state.is_streaming = False
+
+
+        if "has_user_message" not in st.session_state:
+            st.session_state.has_user_message = False
+
         if "messages" not in st.session_state:
             st.session_state.messages = [
                 {
@@ -33,7 +40,7 @@ class ChatbotApp:
         st.title("MTG Assistant")
         st.write("Ask me anything about **Magic: The Gathering**!")
 
-        st.markdown("###Example Prompts")
+        st.markdown("### Example Prompts")
     
         example_prompts = [
             "⚡ What does the card *Lightning Bolt* do?",
@@ -44,7 +51,7 @@ class ChatbotApp:
 
     def display_chat_messages(self):
         """Display all chat messages"""
-        if not any(msg["role"] == "user" for msg in st.session_state.messages):
+        if not st.session_state.has_user_message:
             self.display_empty_chat()
 
         for message in st.session_state.messages:
@@ -63,36 +70,29 @@ class ChatbotApp:
                 "content": prompt
             })
 
-            with st.chat_message("user"):
-                st.markdown(prompt)
+            st.session_state.has_user_message = True
 
-            with st.chat_message("assistant"):
-                message_placeholder = st.empty()
-                response = ""
+            response = ""
+            try:
+                response = self.prompt_service.mock_get_answer("Prompt answer")
 
-                try:
-                    stream = self.prompt_service.mock_get_answer("Prompt answer")
+                st.session_state.messages.append({
+                    "role": "assistant",
+                    "content": response.strip()
+                })
 
-                    ## TODO: CHANGE TO STREAM
-                    for chunk in stream.split():
-                        response += chunk + " "
-                        time.sleep(0.05)
-                        message_placeholder.markdown(response + "▌")
-                    message_placeholder.markdown(response)
+            except Exception as e:
+                st.session_state.messages.append({
+                    "role": "assistant",
+                    "content": f"Error: {e}"
+                })
 
-                    st.session_state.messages.append({
-                        "role": "assistant",
-                        "content": response
-                    })
-                except Exception as e:
-                    st.error(f"Error: {e}")
 
     def run(self):
         self.display_sidebar()
 
-        self.display_chat_messages()
-
         self.handle_user_input()
+        self.display_chat_messages()
 
 if __name__ == "__main__":
     app = ChatbotApp()

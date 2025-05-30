@@ -9,6 +9,8 @@ RUN pip install --upgrade pip && \
 
 COPY . .
 
+# ENV PYTHONPATH=/app
+
 EXPOSE 8501
 
 # CMD ["python", "-m", "src.app"]

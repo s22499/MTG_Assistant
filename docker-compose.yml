@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     ports:
       # - "3000:3000"
-      - "3000:8501"
+      - "8501:8501"
     volumes:
       - ./frontend:/app
     depends_on:

@@ -1,5 +1,5 @@
 import streamlit as st
-from src.services.promptService import PromptService
+from services.promptService import PromptService
 import time
 
 class ChatbotApp:
@@ -9,9 +9,9 @@ class ChatbotApp:
             layout="wide"
         )
 
-        self.initialize_session_state();
+        self.initialize_session_state()
 
-        self.prompt_service = PromptService(api_url="http://data:8000")
+        self.prompt_service = PromptService(api_url="http://backend:4000")
 
     def initialize_session_state(self):
         if "is_streaming" not in st.session_state:
@@ -43,7 +43,7 @@ class ChatbotApp:
         st.markdown("### Example Prompts")
     
         example_prompts = [
-            "⚡ What does the card *Lightning Bolt* do?",
+            "What does the card *Lightning Bolt* do?",
         ]
 
         for prompt in example_prompts:
@@ -74,7 +74,7 @@ class ChatbotApp:
 
             response = ""
             try:
-                response = self.prompt_service.mock_get_answer("Prompt answer")
+                response = self.prompt_service.ask(prompt)
 
                 st.session_state.messages.append({
                     "role": "assistant",

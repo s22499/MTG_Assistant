@@ -39,6 +39,6 @@ class PromptService:
                 json={"question": prompt}
             )
             response.raise_for_status()
-            return response.json().get("refined_query", "")
+            return response.json().get("response", "")
         except requests.RequestException as e:
             raise RuntimeError(f"Failed to get full answer: {e}")

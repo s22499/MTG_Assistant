@@ -1,0 +1,78 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+env/
+venv/
+ENV/
+.Python
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Pip logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Test and coverage tools
+.tox/
+.coverage
+.coverage.*
+.cache/
+nosetests.xml
+coverage.xml
+*.cover
+htmlcov/
+.pytest_cache/
+.hypothesis/
+
+# Static analysis
+.mypy_cache/
+.dmypy.json
+.pyre/
+.pytype/
+
+# Test databases or local state
+*.sqlite3
+*.db
+
+# Logs and temp files
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Secrets and local configs
+.env
+.env.*
+*.secret
+*.key
+*.pem
+
+# Editor / IDE config
+.vscode/
+.idea/
+*.iml
+
+# Git and version control
+.git/
+.gitignore
+.gitattributes
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Virtual environments
+env/
+venv/
+.VENV/
+.venv/
+ENV/
+.Python

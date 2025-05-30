@@ -100,26 +100,20 @@ async def ask_question(request: Request):
     
     refined_query = llm_service.refine_query(user_question)
 
-    # Testowy kontekst
-    context = """Lightning Bolt is a red instant card that deals 3 damage to any target. It costs {R} to cast and is often included in burn decks for its efficiency.
+    collections_to_query = ["Articles", "Cards"]
+    all_results = []
 
-Counterspell is a blue instant card counters any spell. It's commonly used in control decks to stop opponent threats.
+    for name in collections_to_query:
+        collection = chroma_service.get_collection(name)
+        results = collection.similarity_search(refined_query, k=3)
+        all_results.extend(results)
 
-Control decks typically aim to prolong the game, counter spells, and win with a few powerful finishers like planeswalkers or hard-to-remove creatures.
-
-In formats like Modern and Legacy, black-blue (Dimir) control decks use cards like Fatal Push, Thoughtseize, and Jace, the Mind Sculptor.
-
-Instant-speed interaction is crucial for control decks to respond during the opponent's turn. Cards like Mana Leak, Cryptic Command, and Hero's Downfall are popular options.
-
-Against aggro decks, control players prioritize early removal and card advantage through cantrips or card draw engines like Think Twice and Fact or Fiction.
-"""
-
-# TODO: Usunąć testowy kontekst i zastąpić contekstem stowrzonym przez Chromę
+    context = "\n".join([doc.page_content for doc in all_results])
 
     answer = llm_service.generate_answer(context=context, question=user_question)
 
     return {
         "refined_query": refined_query,
         "response": answer,
-        # "context_sources": [doc.metadata for doc in search_results]
+        "context_sources": context
     }

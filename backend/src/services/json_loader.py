@@ -19,24 +19,40 @@ def load_json_documents(json_path: str) -> List[Document]:
 
 def split_json_documents(documents: List[Document], max_chunk_size: int = 1000) -> List[Document]:
 
-    splitter = RecursiveJsonSplitter(
-        max_chunk_size=max_chunk_size
-    )
-
-    print(f"Splitting {len(documents)} JSON documents...")
-
-
-    all_chunks = []
+    print(f"Processing {len(documents)} JSON documents...")
+    
+    all_cards = []
+    error_count = 0
+    
     for i, doc in enumerate(documents):
         try:
+           
             json_obj = json.loads(doc.page_content)
-            chunks = splitter.create_documents([json_obj])
-            all_chunks.extend(chunks)
+            
+            
+            if isinstance(json_obj, list):
+                for card in json_obj:
+                    new_doc = Document(
+                        page_content=json.dumps(card, ensure_ascii=False),
+                        metadata=doc.metadata.copy()  # Preserve original metadata
+                    )
+                    all_cards.append(new_doc)
+            else:
+                # Single card case
+                new_doc = Document(
+                    page_content=json.dumps(json_obj, ensure_ascii=False),
+                    metadata=doc.metadata.copy()
+                )
+                all_cards.append(new_doc)
+                
         except Exception as e:
-            print(f"❌ Error splitting document at index {i}: {e}")
-            print(f"Problematic document: {doc}")
+            error_count += 1
+            print(f"Error processing document at index {i}: {e}")
+            print(f"Problematic document content: {doc.page_content[:200]}...")  # Truncate for readability
 
-
-    print(f"Split {len(documents)} JSON documents into {len(chunks)} chunks.")
-    return all_chunks
+    print(f"Processed {len(documents)} input documents into {len(all_cards)} card documents.")
+    if error_count > 0:
+        print(f"Encountered errors with {error_count} documents.")
+    
+    return all_cards
 

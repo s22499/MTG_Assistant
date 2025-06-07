@@ -2,8 +2,8 @@ import json
 import random
 
 # === CONFIG ===
-INPUT_PATH = "data/Cards/oracle-cards.json"
-OUTPUT_PATH = "data/Cards/oracle-cards-slim.json"
+INPUT_PATH = "data/Cards/oracle-cards-20250513090237.json"
+OUTPUT_PATH = "data/Cards/oracle-cards-slim2.json"
 
 # Fraction of records to keep (e.g., 0.5 means keep 50%)
 KEEP_FRACTION = 0.25
@@ -19,7 +19,39 @@ KEYS_TO_REMOVE = [
     "image_uris",
     "all_parts",
     "related_uris",
-    "purchase_uris"
+    "purchase_uris",
+    "uri",
+    "scryfall_uri",
+    "legalities",
+    "games",
+    "foil",
+    "nonfoil",
+    "reserved",
+    "game_changer",
+    "oversized",
+    "promo",
+    "reprint",
+    "variation",
+    "set_id",
+    "set",
+    "set_uri",
+    "set_search_uri",
+    "scryfall_set_uri",
+    "rulings_uri",
+    "prints_search_uri",
+    "digital",
+    "card_back_id",
+    "artist_ids",
+    "illustration_id",
+    "border_color",
+    "frame",
+    "security_stamp",
+    "full_art",
+    "textless",
+    "booster",
+    "story_spotlight",
+    "prices"
+
 ]
 
 def slim_json(input_path: str, output_path: str, keep_fraction: float, keys_to_remove: list[str]):

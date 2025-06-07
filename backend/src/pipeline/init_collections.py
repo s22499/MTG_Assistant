@@ -11,7 +11,7 @@ from services.chromadb_service import ChromaDBService
 ARTICLE_COLLECTION = "Articles"
 JSON_COLLECTION = "Cards"
 ARTICLE_PATH = "data/Articles"
-JSON_PATH = "data/Cards/oracle-cards-slim.json" 
+JSON_PATH = "data/Cards/oracle-cards-slim2.json" 
 
 def initialize_collections():
     # === Initialize Chroma DB service (via HttpClient) ===

@@ -32,15 +32,36 @@ embedding_function = OpenAIEmbeddings(
 
 sample_queries = [
     "What are some good cat creature cards to use in commander deck?",
-    "What color of cards can I use if my commanders colors are blue and black? And why can't I use every color of the card?"
-
+    "What color of cards can I use if my commanders colors are blue and black? And why can't I use every color of the card?",
+    "Give me three examples of Elf Creature cards with cmc = 3.0"
 
 ]
 
 expected_responses = [
     "Some strong Cat creature cards to consider for a Commander deck include Arahbo, Roar of the World, Jetmir, Nexus of Revels, and Ygra, Eater of All. Arahbo, Roar of the World is an excellent commander thanks to the eminence ability, which boosts Cats even while Arahbo is in the command zone. Jetmir, Nexus of Revels rewards you for going wide with creatures. Ygra, Eater of All is a mythic Cat creature that synergizes well with Food-based combos.",
-    "If your commander's colors are blue and black, you can only use cards whose color identity is blue, black, or colorless. You cannot include cards that have white, red, or green in their color identity. This restriction exists because a Commander deck must only include cards whose color identities match the color identity of the commander. A card’s color identity includes its mana cost and any colored mana symbols in its rules text. This rule helps preserve balance and flavor in deck construction by tying the deck thematically and mechanically to its commander."
+    "If your commander's colors are blue and black, you can only use cards whose color identity is blue, black, or colorless. You cannot include cards that have white, red, or green in their color identity. This restriction exists because a Commander deck must only include cards whose color identities match the color identity of the commander. A card’s color identity includes its mana cost and any colored mana symbols in its rules text. This rule helps preserve balance and flavor in deck construction by tying the deck thematically and mechanically to its commander.",
+    """
+    Greenweaver Druid
+
+    CMC: 3
+    Type: Creature — Elf Druid
+    Ability: {T}: Add {G}{G}.
+    Set: Zendikar
+
+    Elvish Harbinger
+
+    CMC: 3
+    Type: Creature — Elf Druid
+    Ability: When this creature enters, you may search your library for an Elf card, reveal it, then shuffle and put that card on top. {T}: Add one mana of any color.
+    Set: Duel Decks Anthology: Elves vs. Goblins
     
+    (Possible bonus) Llanowar Envoy
+    
+    CMC: 3
+    Type: Creature — Elf
+    Ability: {T}: Add one mana of any color.
+    Set: Dominaria
+    """
 ]
 
 

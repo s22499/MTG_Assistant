@@ -15,4 +15,3 @@ fastapi
 uvicorn
 pyyaml
 ragas
-sentence-transformers

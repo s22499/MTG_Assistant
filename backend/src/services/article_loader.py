@@ -27,3 +27,4 @@ def split_text(documents: list[Document]):
     print(document.metadata)
 
     return chunks
+

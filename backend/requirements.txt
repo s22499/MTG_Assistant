@@ -14,3 +14,4 @@ jq
 fastapi
 uvicorn
 pyyaml
+ragas

@@ -4,7 +4,6 @@ from src.config.config_manager import ConfigManager
 from src.services.chromadb_service import ChromaDBService
 from src.services.llm_service import LLMService
 
-
 app = FastAPI()
 chroma_service = ChromaDBService()
 llm_service = LLMService()
@@ -69,7 +68,7 @@ def reset_chroma():
         return {"status": "Collection reset successfully."}
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
-    
+
 
 @app.post("/generate")
 async def generate(request: Request):
@@ -91,6 +90,7 @@ async def refine(request: Request):
     refined = llm_service.refine_query(question)
     return {"refined_query": refined}
 
+
 @app.post("/ask")
 async def ask_question(request: Request):
     data = await request.json()
@@ -98,22 +98,8 @@ async def ask_question(request: Request):
     if not user_question:
         return {"error": "Missing 'question'"}
     
-    refined_query = llm_service.refine_query(user_question)
-
-    collections_to_query = ["Articles", "Cards"]
-    all_results = []
-
-    for name in collections_to_query:
-        collection = chroma_service.get_collection(name)
-        results = collection.similarity_search(refined_query, k=3)
-        all_results.extend(results)
-
-    context = "\n".join([doc.page_content for doc in all_results])
-
-    answer = llm_service.generate_answer(context=context, question=user_question)
-
-    return {
-        "refined_query": refined_query,
-        "response": answer,
-        "context_sources": context
-    }
+    try:
+        result = llm_service.run_rag_pipeline(user_question)
+        return result
+    except Exception as e:
+        return {"error": str(e)}

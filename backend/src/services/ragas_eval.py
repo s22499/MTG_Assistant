@@ -8,11 +8,10 @@ from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 import os
 import chromadb
 
-#chroma_service = ChromaDBService()
+# chroma_service = ChromaDBService()
 llm_service = LLMService()
 CHROMA_HOST = "http://localhost:8000"
 client = chromadb.HttpClient(host="localhost", port=8000)
-
 
 api_key = os.environ["OPENAI_API_KEY_TEG"]
 
@@ -68,24 +67,24 @@ expected_responses = [
 def query_collections(query_text: str, collections_to_query: list[str]) -> list[str]:
     query_embedding = embedding_function.embed_query(query_text)
     retrieved_docs = []
-
+    
     for name in collections_to_query:
         collection = client.get_collection(name)
         results = collection.query(query_embeddings=[query_embedding], n_results=10)
         documents = results.get("documents", [[]])[0]  # List of lists
         retrieved_docs.extend(documents)
-
+    
     return retrieved_docs
 
 
 def eval_refined_query(queries, references):
     dataset = []
-
+    
     for query, reference in zip(queries, references):
         refined_query = llm_service.refine_query(query)
         docs = query_collections(refined_query, ["Articles", "Cards"])
         context = "\n".join(docs)
-
+        
         answer = llm_service.generate_answer(context=context, question=query)
         print(answer)
         dataset.append({
@@ -94,7 +93,7 @@ def eval_refined_query(queries, references):
             "response": answer,
             "reference": reference
         })
-
+    
     evaluation_dataset = EvaluationDataset.from_list(dataset)
     evaluator_llm = LangchainLLMWrapper(llm)
     result = evaluate(
@@ -103,14 +102,15 @@ def eval_refined_query(queries, references):
         llm=evaluator_llm
     )
     return result
+
 
 def eval_query(queries, references):
     dataset = []
-
+    
     for query, reference in zip(queries, references):
         docs = query_collections(query, ["Articles", "Cards"])
         context = "\n".join(docs)
-
+        
         answer = llm_service.generate_answer(context=context, question=query)
         print(answer)
         dataset.append({
@@ -119,7 +119,7 @@ def eval_query(queries, references):
             "response": answer,
             "reference": reference
         })
-
+    
     evaluation_dataset = EvaluationDataset.from_list(dataset)
     evaluator_llm = LangchainLLMWrapper(llm)
     result = evaluate(
@@ -128,12 +128,13 @@ def eval_query(queries, references):
         llm=evaluator_llm
     )
     return result
+
 
 if __name__ == "__main__":
     print("Running evaluation with refined queries:")
     refined_result = eval_refined_query(sample_queries, expected_responses)
     print(refined_result)
-
+    
     print("\nRunning evaluation with raw queries:")
     raw_result = eval_query(sample_queries, expected_responses)
     print(raw_result)

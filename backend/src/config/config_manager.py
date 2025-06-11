@@ -3,17 +3,18 @@ import os
 import yaml
 from typing import Dict, Any, Optional
 
+
 class ConfigManager:
     """Configuration manager for the chatbot application (Singleton)"""
-
+    
     _instance = None
-
+    
     def __new__(cls, config_path: str):
         if cls._instance is None:
             cls._instance = super(ConfigManager, cls).__new__(cls)
             cls._instance._initialized = False
         return cls._instance
-
+    
     def __init__(self, config_path: str):
         if self._initialized:
             return
@@ -31,7 +32,7 @@ class ConfigManager:
         # Create default config
         # TODO: Add default values for your config
         default_config = {
-
+        
         }
         
         # Try to load config file
@@ -51,7 +52,7 @@ class ConfigManager:
                 # Save default config
                 with open(self.config_path, 'w') as file:
                     yaml.dump(default_config, file, default_flow_style=False)
-                
+        
         except Exception as e:
             print(f"Error loading config: {e}")
         

@@ -41,10 +41,11 @@ class LLMService:
     
     def run_rag_pipeline(self, user_query: str) -> dict:
         chroma = ChromaDBService()
-        
+        print("Connected to chroma")
         candidates = [self.refine_query(user_query, temperature=0.9) for _ in range(4)]
+        print("Display candidates querry prompt:" + candidates)
         best_query = self.choose_best_query(user_query, candidates)
-
+        print("Display candidates querry prompt:" + best_query)
         collections_to_query = ["Articles", "Cards"]
         all_results = []
 
@@ -54,6 +55,8 @@ class LLMService:
             all_results.extend(results)
 
         context = "\n".join([doc.page_content for doc in all_results])
+        print(context)
+
         answer = self.generate_answer(context, user_query)
         
         return {

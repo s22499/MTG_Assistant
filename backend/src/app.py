@@ -95,10 +95,12 @@ async def refine(request: Request):
 async def ask_question(request: Request):
     data = await request.json()
     user_question = data.get("question")
+    print(user_question)
     if not user_question:
         return {"error": "Missing 'question'"}
     
     try:
+        print("Entered try catch in ask")
         result = llm_service.run_rag_pipeline(user_question)
         return result
     except Exception as e:

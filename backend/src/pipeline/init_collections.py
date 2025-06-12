@@ -20,17 +20,17 @@ def initialize_collections():
     # === Process Markdown documents ===
     print("Loading and splitting Markdown documents...")
     md_docs = load_md(ARTICLE_PATH)
-    md_chunks = split_md(md_docs)
-    print(f"Inserting {len(md_chunks)} Markdown chunks into '{ARTICLE_COLLECTION}' collection...")
-    chroma.add_documents(collection_name=ARTICLE_COLLECTION, chunks=md_chunks)
+    #md_chunks = split_md(md_docs)
+    #print(f"Inserting {len(md_chunks)} Markdown chunks into '{ARTICLE_COLLECTION}' collection...")
+    #chroma.add_documents(collection_name=ARTICLE_COLLECTION, chunks=md_chunks)
     print("Articles succesfuly added to collection")
     
     # === Process JSON document ===
     print("Loading and splitting JSON documents...")
     json_docs = load_json_documents(JSON_PATH)
-    json_chunks = split_json_documents(json_docs)
-    print(f"Inserting {len(json_chunks)} JSON chunks into '{JSON_COLLECTION}' collection...")
-    chroma.add_documents(collection_name=JSON_COLLECTION, chunks=json_chunks)
+    #json_chunks = split_json_documents(json_docs)
+    #print(f"Inserting {len(json_chunks)} JSON chunks into '{JSON_COLLECTION}' collection...")
+    #chroma.add_documents(collection_name=JSON_COLLECTION, chunks=json_chunks)
     print("JSON documents added to collection successfully")
     
     print("Collections initialized successfully.")

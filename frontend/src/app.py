@@ -37,6 +37,7 @@ class ChatbotApp:
         st.session_state.chats[chat_id] = {
             "name": f"Chat {len(st.session_state.chats) + 1}",
             "has_user_message": False,
+            "last_updated": time.time(),
             "messages": [
                 {
                     "role": "system",
@@ -47,6 +48,9 @@ class ChatbotApp:
 
         st.session_state.active_chat = chat_id
         st.session_state.has_user_message = False
+
+    def has_empty_chat(self):
+        return any(not chat.get("has_user_message", False) for chat in st.session_state.chats.values())
 
     
     def display_sidebar(self):
@@ -94,12 +98,19 @@ class ChatbotApp:
             )
 
             if st.button("New Chat"):
-                self.create_new_chat()
-                st.rerun()
+                if not self.has_empty_chat():
+                    self.create_new_chat()
+                    st.rerun()
 
             active_chat = st.session_state.active_chat
 
-            for chat_id, chat in reversed(list(st.session_state.chats.items())):
+            sorted_chats = sorted(
+                st.session_state.chats.items(),
+                key=lambda item: item[1]["last_updated"],
+                reverse=True
+            )
+
+            for chat_id, chat in sorted_chats:
                 cols = st.columns([0.8, 0.2])
 
                 with cols[0]:
@@ -122,6 +133,13 @@ class ChatbotApp:
                         )
                     else:
                         if st.button(chat["name"], key=f"chat_{chat_id}"):
+
+                            active_chat = st.session_state.active_chat
+
+                            if active_chat in st.session_state.chats:
+                                if not st.session_state.chats[active_chat].get("has_user_message", False):
+                                    st.session_state.chats.pop(active_chat)
+
                             st.session_state.active_chat = chat_id
                             st.session_state.has_user_message = bool(chat.get("has_user_message", False))
                             st.rerun()
@@ -187,6 +205,9 @@ class ChatbotApp:
                     "role": "assistant",
                     "content": response.strip()
                 })
+                chat["last_updated"] = time.time()
+
+                st.rerun()
             
             except Exception as e:
                 chat["messages"].append({

@@ -7,7 +7,7 @@ backgroundColor = "#1F1B19"
 textColor = "#e0e0e0"
 font = "sans-serif"   
 
-borderColor = "93563E50"
+borderColor = "#E0825C50"
 
 baseRadius = "0.75rem"
 showWidgetBorder = true

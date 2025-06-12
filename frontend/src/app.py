@@ -1,6 +1,7 @@
 import streamlit as st
 from services.promptService import PromptService
 import time
+from uuid import uuid4
 
 
 class ChatbotApp:
@@ -21,20 +22,123 @@ class ChatbotApp:
         if "has_user_message" not in st.session_state:
             st.session_state.has_user_message = False
         
-        if "messages" not in st.session_state:
-            st.session_state.messages = [
+        if "chats" not in st.session_state:
+            st.session_state.chats = {}
+            self.create_new_chat()
+
+        if not st.session_state.chats:
+            self.create_new_chat()
+
+        if "active_chat" not in st.session_state:
+            st.session_state.active_chat = next(iter(st.session_state.chats))
+
+    def create_new_chat(self):
+        chat_id = str(uuid4())[:8]
+        st.session_state.chats[chat_id] = {
+            "name": f"Chat {len(st.session_state.chats) + 1}",
+            "has_user_message": False,
+            "messages": [
                 {
                     "role": "system",
                     "content": "You are a helpful assistant that answers questions about Magic: The Gathering."
                 }
             ]
+        }
+
+        st.session_state.active_chat = chat_id
+        st.session_state.has_user_message = False
+
     
     def display_sidebar(self):
         """Display the sidebar with the chat history and other options."""
         with st.sidebar:
             st.markdown("## MTG Assistant")
             st.markdown("### Chats")
-            st.info("First chat")
+
+            st.markdown(
+                """
+                <style>
+
+                .stSidebar .stVerticalBlock>div:nth-child(4) button {
+                    width: 100%;
+                }
+
+                .stSidebar .stHorizontalBlock {
+                    position: relative;
+                    height: 40px;
+                }
+
+                .stSidebar .stHorizontalBlock p {
+                    text-align: left;
+                }
+
+                .stSidebar .stHorizontalBlock>.stColumn:first-child,
+                .stSidebar .stHorizontalBlock>.stColumn:first-child button[kind="secondary"],
+                .stSidebar .stHorizontalBlock>.stColumn:first-child div{
+                    width: 100% !important; 
+                }
+
+                .stSidebar .stHorizontalBlock>.stColumn:not(:first-child) button[kind="secondary"] {
+                    background-color: transparent;
+                    border: 1px solid transparent;
+                }
+
+                .stSidebar .stHorizontalBlock>.stColumn:last-child {
+                    position: absolute;
+                    right: 12px;
+                }
+
+                </style>
+                """,
+                unsafe_allow_html=True
+            )
+
+            if st.button("New Chat"):
+                self.create_new_chat()
+                st.rerun()
+
+            active_chat = st.session_state.active_chat
+
+            for chat_id, chat in reversed(list(st.session_state.chats.items())):
+                cols = st.columns([0.8, 0.2])
+
+                with cols[0]:
+                    if chat_id == active_chat:
+                        st.markdown(
+                            f"""
+                            <div style="
+                                background-color: #E0825C50;
+                                color: 000000;
+                                padding: 7px 12px;
+                                border-radius: 0.75rem;
+                                cursor: pointer;
+                                width: fit-content;
+                                border: 1px solid #E0825C;
+                            ">
+                            {chat["name"]}
+                            </div>
+                            """,
+                            unsafe_allow_html=True
+                        )
+                    else:
+                        if st.button(chat["name"], key=f"chat_{chat_id}"):
+                            st.session_state.active_chat = chat_id
+                            st.session_state.has_user_message = bool(chat.get("has_user_message", False))
+                            st.rerun()
+
+                with cols[1]:
+                    if st.button("X", key=f"delete_{chat_id}"):
+                        st.session_state.chats.pop(chat_id)
+                        if active_chat == chat_id:
+                            remaining_chats = list(st.session_state.chats.keys())
+                            if remaining_chats:
+                                st.session_state.active_chat = remaining_chats[0]
+                            else:
+                                self.create_new_chat()
+                        st.rerun()
+
+                
+
     
     def display_empty_chat(self):
         st.title("MTG Assistant")
@@ -51,41 +155,45 @@ class ChatbotApp:
     
     def display_chat_messages(self):
         """Display all chat messages"""
-        if not st.session_state.has_user_message:
+        chat_id = st.session_state.active_chat
+        chat = st.session_state.chats[chat_id]
+
+        if not chat["has_user_message"]:
             self.display_empty_chat()
-        
-        for message in st.session_state.messages:
+            
+        for message in chat["messages"]:
             if message["role"] != "system":
                 with st.chat_message(message["role"]):
                     st.markdown(message["content"])
     
     def handle_user_input(self):
         """Process user input and update chat messages."""
-        # prompt = st.text_input("Enter your question here:")
         
         if prompt := st.chat_input("Enter your question here:"):
+            chat_id = st.session_state.active_chat
+            chat = st.session_state.chats[chat_id]
             
-            st.session_state.messages.append({
+            chat["messages"].append({
                 "role": "user",
                 "content": prompt
             })
-            
-            st.session_state.has_user_message = True
+            chat["has_user_message"] = True
             
             response = ""
             try:
                 response = self.prompt_service.ask(prompt)
                 
-                st.session_state.messages.append({
+                chat["messages"].append({
                     "role": "assistant",
                     "content": response.strip()
                 })
             
             except Exception as e:
-                st.session_state.messages.append({
+                chat["messages"].append({
                     "role": "assistant",
                     "content": f"Error: {e}"
                 })
+            
     
     def run(self):
         self.display_sidebar()

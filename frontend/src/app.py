@@ -176,6 +176,17 @@ class ChatbotApp:
         chat_id = st.session_state.active_chat
         chat = st.session_state.chats[chat_id]
 
+        st.markdown("""
+            <style>
+            .stMain .stChatMessage:nth-child(odd) {
+                background-color: #2D2724 !important;
+            }
+            .stMain .stChatMessage:nth-child(even) {
+                background-color: transparent !important;
+            }
+            </style>
+        """, unsafe_allow_html=True)
+
         if not chat["has_user_message"]:
             self.display_empty_chat()
             

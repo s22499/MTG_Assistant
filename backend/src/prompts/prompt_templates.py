@@ -10,7 +10,7 @@ Answer this question clearly and helpfully:
 """
 
 QUERY_REWRITE_PROMPT = """
-Rewrite the following Magic: The Gathering question to include specific keywords such as deck archetypes, card names, formats, and colors. 
+Rewrite the following Magic: The Gathering question to include specific keywords such as deck archetypes, card names, formats, and colors, if user query implies usage of them. 
 Make it more suitable for vector search in a rulebook and article database.
 
 Original question:

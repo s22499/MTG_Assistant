@@ -47,6 +47,20 @@ services:
     volumes:
       - chroma-data:/chroma/chroma
 
+  evaluation:
+    build:
+      context: ./evaluation
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - ./evaluation:/app
+    depends_on:
+      - data
+      - backend
+    networks:
+      - default
+
 volumes:
   chroma-data:
 

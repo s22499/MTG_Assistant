@@ -43,13 +43,17 @@ class LLMService:
         chroma = ChromaDBService()
         
         candidates = [self.refine_query(user_query, temperature=0.9) for _ in range(4)]
-        
         best_query = self.choose_best_query(user_query, candidates)
-        
-        collection = chroma.get_collection("default")
-        documents = collection.similarity_search(best_query, k=5)
-        context = "\n".join([doc.page_content for doc in documents])
-        
+
+        collections_to_query = ["Articles", "Cards"]
+        all_results = []
+
+        for name in collections_to_query:
+            collection = chroma.get_collection(name)
+            results = collection.similarity_search(best_query, k=5)
+            all_results.extend(results)
+
+        context = "\n".join([doc.page_content for doc in all_results])
         answer = self.generate_answer(context, user_query)
         
         return {

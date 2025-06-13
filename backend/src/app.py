@@ -8,7 +8,7 @@ app = FastAPI()
 chroma_service = ChromaDBService()
 llm_service = LLMService()
 
-# Load configuration
+
 config = ConfigManager("config.yaml")
 chroma_host = config.get_value("chroma.host", "localhost")
 chroma_port = config.get_value("chroma.port", 8000)

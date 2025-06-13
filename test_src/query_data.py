@@ -2,8 +2,7 @@
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_community.vectorstores import Chroma
 from langchain.prompts import ChatPromptTemplate
-import openai 
-from dotenv import load_dotenv
+import openai
 import os
 import shutil
 

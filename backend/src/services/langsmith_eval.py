@@ -3,13 +3,10 @@ from openevals.llm import create_llm_as_judge
 from openevals.prompts import CORRECTNESS_PROMPT
 from openai import OpenAI
 import os
-from dotenv import load_dotenv
 from chromadb_service import ChromaDBService
 from llm_service import LLMService
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 import chromadb
-
-load_dotenv(r"D:\TEGPROJECT\MTG_Assistant\.env")
 
 
 langsmith_tracing = os.getenv("LANGSMITH_TRACING")

@@ -1,30 +1,20 @@
-from langsmith import Client, wrappers
+import os
+import requests
+from langsmith import Client
 from openevals.llm import create_llm_as_judge
 from openevals.prompts import CORRECTNESS_PROMPT
 from openai import OpenAI
-import os
-from dotenv import load_dotenv
-from backend.src.services.chromadb_service import ChromaDBService
-from backend.src.services.llm_service import LLMService
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-import chromadb
 
-load_dotenv(r"D:\TEGPROJECT\MTG_Assistant\.env")
+BACKEND_URL = "http://backend:4000/ask"
 
-
-langsmith_tracing = os.getenv("LANGSMITH_TRACING")
-langsmith_endpoint = os.getenv("LANGSMITH_ENDPOINT")
-langsmith_api_key = os.getenv("LANGSMITH_API_KEY")
-openai_api_key = os.getenv("OPENAI_API_KEY_TEG")
-
-llm_service = LLMService()
-CHROMA_HOST = "http://data:8000"
-client = chromadb.HttpClient(host="data", port=8000)
+langchain_tracking = os.getenv("LANGCHAIN_TRACING_V2")
+langsmith_api_key = os.getenv("LANGCHAIN_API_KEY")
+openai_api_key = os.getenv("OPENAI_API_KEY")
+if not openai_api_key:
+    raise ValueError("OPENAI_API_KEY environment variable is not set.")
 
 langsmith_client = Client(api_key=langsmith_api_key)
-
-dataset = langsmith_client.create_dataset(dataset_name="Sample questions8", description="MTG questions for rag")
-
+client = OpenAI(api_key=openai_api_key)
 
 examples = [
 
@@ -67,26 +57,30 @@ examples = [
 
 ]
 
+dataset = langsmith_client.read_dataset(
+    dataset_name="Sample questions8"
+)
+
 
 langsmith_client.create_examples(dataset_id=dataset.id, examples=examples)
 
-openai_client = wrappers.wrap_openai(OpenAI(api_key=openai_api_key))
 
 def target(inputs: dict) -> dict:
-    user_query = inputs.get("input")
-    result = llm_service.run_rag_pipeline(user_query)
-    return {
-        "output": result["response"],
-        "original_question": result["original_question"],
-        "refined_candidates": result["refined_candidates"],
-        "best_query": result["best_query"]
-    }
+    try:
+        response = requests.post(BACKEND_URL, json={"question": inputs.get("question")})
+        data = response.json()
+        return {
+            "answer": data.get("response", "") 
+        }
+
+    except Exception as e:
+        return {"answer": f"Error: {e}"}
 
 
 def correctness_evaluator(inputs: dict, outputs: dict, reference_outputs: dict):
     evaluator = create_llm_as_judge(
         prompt=CORRECTNESS_PROMPT,
-        model="openai:o3-mini",
+        model="openai:gpt-4o-mini",
         feedback_key="correctness"
     )
     eval_result = evaluator(
@@ -95,16 +89,13 @@ def correctness_evaluator(inputs: dict, outputs: dict, reference_outputs: dict):
         reference_outputs=reference_outputs
     )
     return eval_result
-#%%
+
 experiment_results = langsmith_client.evaluate(
     target,
     data="Sample questions8",
     evaluators=[
-        correctness_evaluator,
-        # you can add multiple evaluators here
+        correctness_evaluator
     ],
-    experiment_prefix="first-eval-in-langsmith",
+    experiment_prefix="MTG RAG Evaluation",
     max_concurrency=2,
 )
-
-langsmith_client.delete_dataset(dataset_name="Sample questions8")

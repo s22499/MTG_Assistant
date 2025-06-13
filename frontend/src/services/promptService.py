@@ -7,7 +7,7 @@ class PromptService:
     
     def refine_prompt(self, prompt: str) -> str:
         """
-        Refines user fornt to better match vector sotre
+        Refines user front to better match vector store
         """
         
         try:
